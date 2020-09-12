@@ -18,7 +18,9 @@ import java.sql.SQLException;
 
  insert into UserTable
  (username, password, role)
- values('dimitris', 'dimitris', 'user');
+ values('dimitris', 'dimitris', 'user'),
+ ('aristotelis', 'aristotelis', 'user')
+ ;
 
 
  select * from usertable;
