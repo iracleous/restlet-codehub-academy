@@ -1,0 +1,125 @@
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.restlet.tutorial.webapi</groupId>
+    <artifactId>RestApiProject</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>RestApiProject</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <restlet-version>2.4.3</restlet-version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+        <hibernate.version>5.4.1.Final</hibernate.version>
+        <lombok.version>1.18.12</lombok.version>
+    </properties>
+
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet</artifactId>
+            <version>${restlet-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet.ext.jackson</artifactId>
+            <version>${restlet-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet.ext.jetty</artifactId>
+            <version>${restlet-version}</version>
+        </dependency>
+
+        <!-- tests -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- persistence -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>7.0.0.jre8</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+
+
+        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.freemarker/freemarker &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.freemarker</groupId>-->
+        <!--            <artifactId>freemarker</artifactId>-->
+        <!--            <version>2.3.30</version>-->
+        <!--        </dependency>-->
+
+        <!-- Hibernate 5.4.1 Final -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
+
+
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>maven-restlet</id>
+            <name>Public online Restlet repository</name>
+            <url>http://maven.restlet.talend.com</url>
+        </repository>
+        <repository>
+            <id>mulesoft-releases</id>
+            <name>MuleSoft Releases Repository</name>
+            <url>https://repository-master.mulesoft.org/releases/</url>
+        </repository>
+    </repositories>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.0</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+
+    </build>
+
+
+</project>
