@@ -8,6 +8,27 @@ import org.restlet.security.SecretVerifier;
 
 import java.sql.SQLException;
 
+/**
+ *
+ create  table UserTable(
+ username nvarchar(50),
+ password nvarchar(50),
+ role nvarchar(50)
+ );
+
+ insert into UserTable
+ (username, password, role)
+ values('dimitris', 'dimitris', 'user');
+
+
+ select * from usertable;
+
+
+
+
+ *
+ */
+
 public class CustomVerifier extends SecretVerifier {
 
     public int verify(String identifier, char[] secret)
