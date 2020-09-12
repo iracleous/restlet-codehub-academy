@@ -20,8 +20,5 @@ public interface ProductResource {
     public ProductRepresentation store(ProductRepresentation productReprIn)
             throws NotFoundException, BadEntityException;
 
-    @Post("json")
-    public ProductRepresentation add(ProductRepresentation companyReprIn)
-            throws BadEntityException;
 
 }

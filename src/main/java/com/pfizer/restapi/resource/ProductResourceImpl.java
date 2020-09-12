@@ -36,7 +36,7 @@ private ProductRepository productRepository ;
           productRepository =
                   new ProductRepository (JpaUtil.getEntityManager()) ;
           id = Long.parseLong(getAttribute("id"));
-      
+
       }
       catch(Exception e)
       {
@@ -45,6 +45,10 @@ private ProductRepository productRepository ;
 
       LOGGER.info("Initialising product resource ends");
     }
+
+
+
+
 
 
     @Override
@@ -60,6 +64,8 @@ private ProductRepository productRepository ;
         ProductRepository productRepository = new ProductRepository(JpaUtil.getEntityManager());
         Product product;
         try {
+
+
             Optional<Product> oproduct = productRepository.findById(id);
 
 
@@ -101,63 +107,5 @@ private ProductRepository productRepository ;
         return null;
     }
 
-    @Override
-    public ProductRepresentation add
-            (ProductRepresentation productRepresentationIn)
-            throws BadEntityException {
 
-        LOGGER.finer("Add a new product.");
-
-        // Check authorization
-        ResourceUtils.checkRole(this, Shield.ROLE_USER);
-        LOGGER.finer("User allowed to add a product.");
-
-        // Check entity
-
-        ResourceValidator.notNull(productRepresentationIn);
-        ResourceValidator.validate(productRepresentationIn);
-        LOGGER.finer("Product checked");
-
-        try {
-
-            // Convert CompanyRepresentation to Company
-            Product productIn = new Product();
-            productIn.setName(productRepresentationIn.getName());
-            productIn.setPrice(productRepresentationIn.getPrice());
-            productIn.setInventoryQuantity(
-                    productRepresentationIn.getInventoryQuantity());
-
-
-            Optional<Product> productOut =
-                    productRepository.save(productIn);
-            Product product= null;
-            if (productOut.isPresent())
-                product = productOut.get();
-            else
-                throw new
-                        BadEntityException(" Product has not been created");
-
-            ProductRepresentation result =
-                    new ProductRepresentation();
-            result.setInventoryQuantity(product.getInventoryQuantity());
-            result.setName(product.getName());
-            result.setPrice(product.getPrice());
-            result.setUri("http://localhost:9000/v1/product/"+product.getId());
-
-            getResponse().setLocationRef(
-                    "http://localhost:9000/v1/product/"+product.getId());
-             getResponse().setStatus(Status.SUCCESS_CREATED);
-
-            LOGGER.finer("Product successfully added.");
-
-            return result;
-        } catch (Exception ex) {
-            LOGGER.log(Level.WARNING, "Error when adding a product", ex);
-
-            throw new ResourceException(ex);
-        }
-
-
-
-    }
 }

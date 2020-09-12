@@ -1,6 +1,7 @@
 package com.pfizer.restapi.router;
 
 import com.pfizer.restapi.resource.PingServerResource;
+import com.pfizer.restapi.resource.ProductListResourceImpl;
 import com.pfizer.restapi.resource.ProductResourceImpl;
 import org.restlet.Application;
 import org.restlet.routing.Router;
@@ -19,8 +20,8 @@ public class CustomRouter {
         Router router = new Router(application.getContext());
 
         router.attach("/product/{id}",  ProductResourceImpl.class);
-        router.attach("/product",  ProductResourceImpl.class);
-        router.attach("/product/",  ProductResourceImpl.class);
+        router.attach("/product",  ProductListResourceImpl.class);
+        router.attach("/product/",  ProductListResourceImpl.class);
 
 
         return router;
