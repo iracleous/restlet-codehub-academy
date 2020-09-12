@@ -2,6 +2,7 @@ package com.pfizer.restapi;
 
 import com.pfizer.restapi.router.CustomRouter;
 import com.pfizer.restapi.security.Shield;
+import com.pfizer.restapi.security.cors.CorsFilter;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;
@@ -21,7 +22,7 @@ public class ApiMain extends Application {
         LOGGER.info("Contacts application starting...");
 //  HibernateStart.main();
 
-        PersistenceService.initialize();
+
         Component c = new Component();
         c.getServers().add(Protocol.HTTP, 9000);
         c.getDefaultHost().attach("/v1", new ApiMain());
