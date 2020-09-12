@@ -64,6 +64,21 @@ public class ProductListResourceImpl
             List<ProductRepresentation> result =
                     new ArrayList<>();
 
+
+
+//            for (Product product :products)
+//                result.add (new ProductRepresentation(product));
+
+
+            products.forEach(product ->
+                    result.add (new ProductRepresentation(product)));
+
+
+            return result;
+        }
+        catch(Exception e)
+        {
+            throw new NotFoundException("products not found");
         }
 
 

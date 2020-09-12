@@ -53,6 +53,6 @@ public class ProductRepository {
 
     public boolean remove(Long id){
         entityManager.remove(findById(id));
-        return false;
+        return true;
     }
 }

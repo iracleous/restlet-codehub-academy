@@ -1,22 +1,18 @@
 package com.pfizer.restapi.resource;
 
-import com.pfizer.restapi.ApiMain;
 import com.pfizer.restapi.exception.BadEntityException;
 import com.pfizer.restapi.exception.NotFoundException;
 import com.pfizer.restapi.model.Product;
 import com.pfizer.restapi.repository.ProductRepository;
 import com.pfizer.restapi.repository.util.JpaUtil;
 import com.pfizer.restapi.representation.ProductRepresentation;
-import com.pfizer.restapi.resource.contant.Constants;
 import com.pfizer.restapi.resource.util.ResourceValidator;
 import com.pfizer.restapi.security.ResourceUtils;
 import com.pfizer.restapi.security.Shield;
-import org.restlet.data.Status;
 import org.restlet.engine.Engine;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,11 +74,8 @@ private ProductRepository productRepository ;
                 LOGGER.finer("User allowed to retrieve a product.");
                 //System.out.println(  userId);
                 ProductRepresentation result =
-                        new ProductRepresentation();
-                result.setInventoryQuantity(product.getInventoryQuantity());
-                result.setName(product.getName());
-                result.setPrice(product.getPrice());
-                result.setUri("http://localhost:9000/v1/product/"+id);
+                        new ProductRepresentation(product);
+
 
                 LOGGER.finer("Product successfully retrieved");
 
@@ -100,11 +93,93 @@ private ProductRepository productRepository ;
     @Override
     public void remove() throws NotFoundException {
 
+        LOGGER.finer("Removal of product");
+
+        ResourceUtils.checkRole(this, Shield.ROLE_USER);
+        LOGGER.finer("User allowed to remove a product.");
+
+        try {
+
+            // Delete company in DB: return true if deleted
+            Boolean isDeleted = productRepository.remove(id);
+
+            // If product has not been deleted: if not it means that the id must
+            // be wrong
+            if (!isDeleted) {
+                LOGGER.config("Product id does not exist");
+                throw new NotFoundException(
+                        "Product with the following identifier does not exist:"
+                                + id);
+            }
+            LOGGER.finer("Product successfully removed.");
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.WARNING, "Error when removing a product", ex);
+            throw new ResourceException(ex);
+        }
+
+
+
     }
 
     @Override
     public ProductRepresentation store(ProductRepresentation productReprIn) throws NotFoundException, BadEntityException {
-        return null;
+
+        LOGGER.finer("Update a product.");
+
+        ResourceUtils.checkRole(this, Shield.ROLE_USER);
+        LOGGER.finer("User allowed to update a product.");
+
+        // Check given entity
+        ResourceValidator.notNull(productReprIn);
+        ResourceValidator.validate(productReprIn);
+        LOGGER.finer("Company checked");
+
+        try {
+
+            // Convert CompanyRepresentation to Company
+            Product productIn = productReprIn.createProduct();
+            productIn.setId(id);
+
+            Optional<Product> productOut;
+
+            Optional<Product> oProduct = productRepository.findById(id);
+
+            setExisting(oProduct.isPresent());
+
+            // If product exists, we update it.
+            if (isExisting()) {
+                LOGGER.finer("Update product.");
+
+                // Update product in DB and retrieve the new one.
+                productOut = productRepository.save(productIn);
+
+
+
+                // Check if retrieved product is not null : if it is null it
+                // means that the id is wrong.
+                if (!productOut.isPresent()) {
+                    LOGGER.finer("Product does not exist.");
+                    throw new NotFoundException(
+                            "Product with the following id does not exist: "
+                                    + id);
+                }
+            } else {
+                LOGGER.finer("Resource does not exist.");
+                throw new NotFoundException(
+                        "Company with the following id does not exist: " + id);
+            }
+
+            LOGGER.finer("Company successfully updated.");
+            return new ProductRepresentation(productOut.get());
+
+        } catch (Exception ex) {
+
+            throw new ResourceException(ex);
+        }
+
+
+
     }
 
 
