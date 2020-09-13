@@ -40,11 +40,16 @@ public class ProductRepository {
     }
 
     public Optional<Product> save(Product product) {
+
+        Product in = entityManager.find(Product.class, product.getId());
+        in.setName(product.getName());
+        in.setPrice(product.getPrice());
+        in.setInventoryQuantity(product.getInventoryQuantity());
         try {
             entityManager.getTransaction().begin();
-            entityManager.persist(product);
+            entityManager.persist (in);
             entityManager.getTransaction().commit();
-            return Optional.of(product);
+            return Optional.of(in);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -52,7 +57,23 @@ public class ProductRepository {
     }
 
     public boolean remove(Long id){
-        entityManager.remove(findById(id));
+        Optional<Product> oproduct = findById(id);
+        if (oproduct.isPresent()){
+            Product p = oproduct.get();
+
+            try{
+                entityManager.getTransaction().begin();
+                entityManager.remove(p);
+                entityManager.getTransaction().commit();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        }
+
+
         return true;
     }
 }
