@@ -39,7 +39,22 @@ public class ProductRepository {
         return product != null ? Optional.of(product) : Optional.empty();
     }
 
-    public Optional<Product> save(Product product) {
+
+    public Optional<Product> save(Product product){
+
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.persist (product);
+            entityManager.getTransaction().commit();
+            return Optional.of(product);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+
+    public Optional<Product> update(Product product) {
 
         Product in = entityManager.find(Product.class, product.getId());
         in.setName(product.getName());

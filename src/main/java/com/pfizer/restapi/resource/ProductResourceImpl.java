@@ -151,8 +151,7 @@ private ProductRepository productRepository ;
                 LOGGER.finer("Update product.");
 
                 // Update product in DB and retrieve the new one.
-                productOut = productRepository.save(productIn);
-
+                productOut = productRepository.update(productIn);
 
 
                 // Check if retrieved product is not null : if it is null it
