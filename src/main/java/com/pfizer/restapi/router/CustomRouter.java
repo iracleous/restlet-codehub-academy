@@ -10,7 +10,7 @@ public class CustomRouter {
 
     private Application application;
 
-    public CustomRouter(Application application){
+    public CustomRouter(Application application) {
         this.application = application;
 
     }
@@ -19,9 +19,9 @@ public class CustomRouter {
 
         Router router = new Router(application.getContext());
 
-        router.attach("/product/{id}",  ProductResourceImpl.class);
-        router.attach("/product",  ProductListResourceImpl.class);
-        router.attach("/product/",  ProductListResourceImpl.class);
+        router.attach("/product/{id}", ProductResourceImpl.class);
+        router.attach("/product", ProductListResourceImpl.class);
+        router.attach("/product/", ProductListResourceImpl.class);
 
 
         return router;

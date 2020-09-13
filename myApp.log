@@ -1,0 +1,4 @@
+2020-09-13 13:20:27,841 INFO [main] o.e.j.u.log [Log.java:193] Logging initialized @2407ms to org.eclipse.jetty.util.log.Slf4jLog
+2020-09-13 13:20:28,050 INFO [main] o.e.j.s.Server [Server.java:374] jetty-9.4.11.v20180605; built: 2018-06-05T18:24:03.829Z; git: d5fc0523cfa96bfebfbda19606cad384d772f04c; jvm 11.0.8+10-b944.31
+2020-09-13 13:20:29,407 INFO [main] o.e.j.s.AbstractConnector [AbstractConnector.java:289] Started ServerConnector@359df09a{HTTP/1.1,[http/1.1]}{0.0.0.0:9000}
+2020-09-13 13:20:29,408 INFO [main] o.e.j.s.Server [Server.java:411] Started @3991ms

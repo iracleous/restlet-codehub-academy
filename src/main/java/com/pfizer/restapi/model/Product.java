@@ -12,6 +12,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private long id;    /** Technical identifier.  primary key */
+@Column(unique=true)
     private String name;
     private double price;
     private int  inventoryQuantity;

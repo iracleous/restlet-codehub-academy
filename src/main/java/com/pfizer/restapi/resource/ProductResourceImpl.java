@@ -124,7 +124,6 @@ private ProductRepository productRepository ;
 
     @Override
     public ProductRepresentation store(ProductRepresentation productReprIn) throws NotFoundException, BadEntityException {
-
         LOGGER.finer("Update a product.");
 
         ResourceUtils.checkRole(this, Shield.ROLE_USER);
