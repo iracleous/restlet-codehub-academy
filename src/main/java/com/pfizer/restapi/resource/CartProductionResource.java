@@ -6,12 +6,9 @@ import com.pfizer.restapi.representation.ProductRepresentation;
 import com.pfizer.restapi.representation.RepresentationResponse;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
-import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 
-
-
-public interface ProductResource {
+public interface CartProductionResource {
 
     @Get("json")
     public RepresentationResponse<ProductRepresentation> getProduct()  ;

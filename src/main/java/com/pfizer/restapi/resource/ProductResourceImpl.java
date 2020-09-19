@@ -6,13 +6,16 @@ import com.pfizer.restapi.model.Product;
 import com.pfizer.restapi.repository.ProductRepository;
 import com.pfizer.restapi.repository.util.JpaUtil;
 import com.pfizer.restapi.representation.ProductRepresentation;
+import com.pfizer.restapi.representation.RepresentationResponse;
 import com.pfizer.restapi.resource.util.ResourceValidator;
 import com.pfizer.restapi.security.ResourceUtils;
 import com.pfizer.restapi.security.Shield;
+
 import org.restlet.engine.Engine;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,20 +26,28 @@ public class ProductResourceImpl
     public static final Logger LOGGER = Engine.getLogger(ProductResourceImpl.class);
 
     private long id;
-private ProductRepository productRepository ;
+    private ProductRepository productRepository ;
+    private EntityManager em;
+
+     @Override
+    protected void doRelease(){
+         em.close();
+     }
 
     @Override
     protected void doInit() {
+
+
         LOGGER.info("Initialising product resource starts");
       try {
-          productRepository =
-                  new ProductRepository (JpaUtil.getEntityManager()) ;
+          em = JpaUtil.getEntityManager();
+          productRepository = new ProductRepository (em) ;
           id = Long.parseLong(getAttribute("id"));
 
       }
-      catch(Exception e)
+      catch(Exception ex)
       {
-          id =-1;
+          throw new ResourceException(ex);
       }
 
       LOGGER.info("Initialising product resource ends");
@@ -46,10 +57,9 @@ private ProductRepository productRepository ;
 
 
 
-
     @Override
-    public ProductRepresentation getProduct()
-            throws NotFoundException {
+    public RepresentationResponse<ProductRepresentation> getProduct()
+    {
         LOGGER.info("Retrieve a product");
 
         // Check authorization
@@ -57,7 +67,7 @@ private ProductRepository productRepository ;
 
 
         // Initialize the persistence layer.
-        ProductRepository productRepository = new ProductRepository(JpaUtil.getEntityManager());
+        ProductRepository productRepository = new ProductRepository(em);
         Product product;
         try {
 
@@ -68,7 +78,11 @@ private ProductRepository productRepository ;
             setExisting(oproduct.isPresent());
             if (!isExisting()) {
                 LOGGER.config("product id does not exist:" + id);
-                throw new NotFoundException("No product with  : " + id);
+              //
+                //  throw new NotFoundException("No product with  : " + id);
+                return  new RepresentationResponse<ProductRepresentation>(400,
+                        "object not found", null);
+
             } else {
                 product = oproduct.get();
                 LOGGER.finer("User allowed to retrieve a product.");
@@ -79,13 +93,17 @@ private ProductRepository productRepository ;
 
                 LOGGER.finer("Product successfully retrieved");
 
-                return result;
+                return new RepresentationResponse<ProductRepresentation>(200,
+                        "ok", result);
 
             }
 
 
         } catch (Exception ex) {
-            throw new ResourceException(ex);
+            return  new RepresentationResponse<ProductRepresentation>(500,
+                    "nok", null);
+          //  throw new NotFoundException("No product with  : " + id);
+    //        throw new ResourceException(ex);
         }
 
     }

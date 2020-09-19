@@ -1,5 +1,6 @@
 package com.pfizer.restapi;
 
+import com.pfizer.restapi.repository.util.JpaUtil;
 import com.pfizer.restapi.router.CustomRouter;
 import com.pfizer.restapi.security.Shield;
 import com.pfizer.restapi.security.cors.CorsFilter;
@@ -12,6 +13,7 @@ import org.restlet.routing.Router;
 import org.restlet.security.ChallengeAuthenticator;
 import org.restlet.security.Role;
 
+import javax.persistence.EntityManager;
 import java.util.logging.Logger;
 
 public class ApiMain extends Application {
@@ -20,7 +22,11 @@ public class ApiMain extends Application {
 
     public static void main(String[] args) throws Exception{
         LOGGER.info("Contacts application starting...");
-//  HibernateStart.main();
+
+        EntityManager em = JpaUtil.getEntityManager();
+        em.close();
+
+
 
 
         Component c = new Component();

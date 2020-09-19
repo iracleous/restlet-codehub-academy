@@ -9,11 +9,13 @@ import com.pfizer.restapi.representation.ProductRepresentation;
 import com.pfizer.restapi.resource.util.ResourceValidator;
 import com.pfizer.restapi.security.ResourceUtils;
 import com.pfizer.restapi.security.Shield;
+import lombok.SneakyThrows;
 import org.restlet.data.Status;
 import org.restlet.engine.Engine;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,19 +31,25 @@ public class ProductListResourceImpl
 
 
     private ProductRepository productRepository ;
+    private EntityManager em;
+
+    @Override
+    protected void doRelease(){
+        em.close();
+    }
 
 
     @Override
     protected void doInit() {
         LOGGER.info("Initialising product resource starts");
         try {
-            productRepository =
-                    new ProductRepository (JpaUtil.getEntityManager()) ;
+            em = JpaUtil.getEntityManager();
+            productRepository = new ProductRepository (em) ;
 
         }
-        catch(Exception e)
+        catch(Exception ex)
         {
-
+            throw new ResourceException(ex);
         }
 
         LOGGER.info("Initialising product resource ends");
