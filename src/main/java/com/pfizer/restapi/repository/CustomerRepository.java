@@ -4,6 +4,7 @@ import com.pfizer.restapi.model.Customer;
 import com.pfizer.restapi.model.Product;
 
 import javax.persistence.EntityManager;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,17 @@ public class CustomerRepository {
         return entityManager.createQuery("from Customer c WHERE c.active = true").getResultList();
     }
 
+    public List<Customer> findAll(Date from, Date to) {
+
+        List<Customer> cs = entityManager.createQuery("from Customer c WHERE c.active = true  " +
+                "and c.creationDate >= :fromDate and c.creationDate <= :toDate")
+                .setParameter("fromDate", from)
+                .setParameter("toDate", to)
+                .getResultList();
+        return cs;
+    }
+
+
     public Optional<Customer> findByName(String name) {
         Customer customer = entityManager.createQuery("SELECT b FROM Customer b WHERE b.lastName = :name", Customer.class)
                 .setParameter("name", name)
@@ -37,7 +49,7 @@ public class CustomerRepository {
 
 
     public Optional<Customer> save(Customer customer){
-
+customer.setCreationDate(new Date());
         try {
             entityManager.getTransaction().begin();
             entityManager.persist (customer);

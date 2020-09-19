@@ -18,7 +18,9 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -30,17 +32,42 @@ public class CustomerListResourceImpl extends ServerResource implements Customer
     private CustomerRepository customerRepository;
     private EntityManager em;
 
+    private Date startDate;
+    private Date endDate;
+
+    /**
+     * This release method closes the entityManager
+     */
     @Override
     protected void doRelease() {
         em.close();
     }
 
+    /**
+     * Initializes the customer repository
+     */
     @Override
     protected void doInit() {
         LOGGER.info("Initialising customer resource starts");
         try {
             em = JpaUtil.getEntityManager();
             customerRepository = new CustomerRepository(em);
+    try {
+        String startDateString = getQueryValue("from");
+        String   endDateString = getQueryValue("to");
+        String[] words = startDateString.split("-");
+
+        startDate = new Date(Integer.parseInt(words[0])-1900,
+                Integer.parseInt(words[1]) - 1, Integer.parseInt(words[2])  );
+
+         words = endDateString.split("-");
+        endDate = new Date(Integer.parseInt(words[0])-1900,
+                 Integer.parseInt(words[1]) - 1, Integer.parseInt(words[2])  );
+    }
+    catch(Exception e)
+    {
+        startDate =null; endDate =null;
+    }
         } catch (Exception ex) {
             throw new ResourceException(ex);
         }
@@ -48,7 +75,12 @@ public class CustomerListResourceImpl extends ServerResource implements Customer
         LOGGER.info("Initialising customer resource ends");
     }
 
-
+    /**
+     *
+     * @param customerIn    representation of a Customer given by the frontEnd
+     * @return  a representation of the persisted object
+     * @throws BadEntityException
+     */
     @Override
     public CustomerRepresentation add(CustomerRepresentation customerIn) throws BadEntityException {
 
@@ -92,6 +124,12 @@ public class CustomerListResourceImpl extends ServerResource implements Customer
 
     }
 
+    /**
+     *
+     * @return all active customers
+     * @throws NotFoundException
+     */
+
     @Override
     public List<CustomerRepresentation> getCustomers() throws NotFoundException {
         LOGGER.finer("Select all customers.");
@@ -99,7 +137,16 @@ public class CustomerListResourceImpl extends ServerResource implements Customer
         // Check authorization
         ResourceUtils.checkRole(this, Shield.ROLE_USER);
         try {
-            List<Customer> customers = customerRepository.findAll();
+
+            List<Customer> customers;
+            if (startDate ==null || endDate ==null)
+            // find customers within a range dates
+                 customers = customerRepository.findAll();
+
+            else
+                customers = customerRepository.findAll(startDate , endDate  );
+
+
             List<CustomerRepresentation> result = new ArrayList<>();
             customers.forEach(customer -> result.add(new CustomerRepresentation(customer)));
             return result;

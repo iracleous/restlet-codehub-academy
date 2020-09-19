@@ -21,12 +21,9 @@ public class CustomRouter {
         router.attach("/product", ProductListResourceImpl.class);
         router.attach("/product/", ProductListResourceImpl.class);
 
-
         router.attach("/customer/{id}", CustomerResourceImpl.class);
         router.attach("/customer", CustomerListResourceImpl.class);
         router.attach("/customer/", CustomerListResourceImpl.class);
-
-
 
 
 

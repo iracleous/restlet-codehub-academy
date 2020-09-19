@@ -22,84 +22,57 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ProductListResourceImpl
-
-        extends ServerResource implements ProductListResource
-{
+public class ProductListResourceImpl  extends ServerResource implements ProductListResource {
 
     public static final Logger LOGGER = Engine.getLogger(ProductResourceImpl.class);
 
-
-    private ProductRepository productRepository ;
+    private ProductRepository productRepository;
     private EntityManager em;
 
     @Override
-    protected void doRelease(){
+    protected void doRelease() {
         em.close();
     }
-
 
     @Override
     protected void doInit() {
         LOGGER.info("Initialising product resource starts");
         try {
             em = JpaUtil.getEntityManager();
-            productRepository = new ProductRepository (em) ;
-
-        }
-        catch(Exception ex)
-        {
+            productRepository = new ProductRepository(em);
+        } catch (Exception ex) {
             throw new ResourceException(ex);
         }
-
         LOGGER.info("Initialising product resource ends");
     }
 
-
-
-
-    public List<ProductRepresentation> getProducts() throws NotFoundException{
-
+    public List<ProductRepresentation> getProducts() throws NotFoundException {
         LOGGER.finer("Select all products.");
-
         // Check authorization
         ResourceUtils.checkRole(this, Shield.ROLE_USER);
 
-        try{
+        try {
 
             List<Product> products =
                     productRepository.findAll();
-            List<ProductRepresentation> result =
-                    new ArrayList<>();
-
-
+            List<ProductRepresentation> result = new ArrayList<>();
 
 //            for (Product product :products)
 //                result.add (new ProductRepresentation(product));
 
-
             products.forEach(product ->
-                    result.add (new ProductRepresentation(product)));
+                    result.add(new ProductRepresentation(product)));
 
 
             return result;
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             throw new NotFoundException("products not found");
         }
-
-
     }
 
 
-
-
-
     @Override
-    public ProductRepresentation add
-            (ProductRepresentation productRepresentationIn)
-            throws BadEntityException {
+    public ProductRepresentation add(ProductRepresentation productRepresentationIn) throws BadEntityException {
 
         LOGGER.finer("Add a new product.");
 
@@ -125,7 +98,7 @@ public class ProductListResourceImpl
 
             Optional<Product> productOut =
                     productRepository.save(productIn);
-            Product product= null;
+            Product product = null;
             if (productOut.isPresent())
                 product = productOut.get();
             else
@@ -137,10 +110,10 @@ public class ProductListResourceImpl
             result.setInventoryQuantity(product.getInventoryQuantity());
             result.setName(product.getName());
             result.setPrice(product.getPrice());
-            result.setUri("http://localhost:9000/v1/product/"+product.getId());
+            result.setUri("http://localhost:9000/v1/product/" + product.getId());
 
             getResponse().setLocationRef(
-                    "http://localhost:9000/v1/product/"+product.getId());
+                    "http://localhost:9000/v1/product/" + product.getId());
             getResponse().setStatus(Status.SUCCESS_CREATED);
 
             LOGGER.finer("Product successfully added.");
@@ -151,7 +124,6 @@ public class ProductListResourceImpl
 
             throw new ResourceException(ex);
         }
-
 
 
     }
